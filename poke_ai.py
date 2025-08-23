@@ -3,9 +3,8 @@ import requests
 
 app = Flask(__name__)
 
-API_KEY = "
-318e5b16-1c35-4b07-b1cb-6e1c227a9cfc
-"
+API_KEY = "318e5b16-1c35-4b07-b1cb-6e1c227a9cfc"
+
 API_URL = "https://api.pokemontcg.io/v2/cards"
 
 @app.route("/", methods=["GET", "POST"])
