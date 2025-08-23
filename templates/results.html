@@ -1,0 +1,24 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Results for {{ search }}</title>
+</head>
+<body>
+    <h1>Results for "{{ search }}"</h1>
+    <a href="/">Search again</a>
+    <div>
+        {% if cards %}
+            {% for card in cards %}
+                <div style="border:1px solid #ccc; padding:10px; margin:10px;">
+                    <h2>{{ card.name }}</h2>
+                    <p>Set: {{ card.set.name }}</p>
+                    <p>Rarity: {{ card.rarity if card.rarity else "N/A" }}</p>
+                    <img src="{{ card.images.small }}" alt="{{ card.name }}">
+                </div>
+            {% endfor %}
+        {% else %}
+            <p>No cards found.</p>
+        {% endif %}
+    </div>
+</body>
+</html>
