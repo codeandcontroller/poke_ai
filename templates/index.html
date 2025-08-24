@@ -34,15 +34,45 @@
     {% if results %}
       <div class="grid">
         {% for card in results %}
-          <div class="card">
-            <h2>{{ card.name }}</h2>
-            <p class="muted">
-              <b>Set:</b> {{ card.set.name }} &nbsp;•&nbsp;
-              <b>No.:</b> {{ card.number }} &nbsp;•&nbsp;
-              <b>Rarity:</b> {{ card.rarity or "N/A" }}
-            </p>
-            <img src="{{ card.images.small }}" alt="{{ card.name }}">
-          </div>
+         <div class="card">
+  <h2>{{ card.name }}</h2>
+  <p class="muted">
+    <b>Set:</b> {{ card.set.name }} &nbsp;•&nbsp;
+    <b>No.:</b> {{ card.number }} &nbsp;•&nbsp;
+    <b>Rarity:</b> {{ card.rarity or "N/A" }}
+  </p>
+  <img src="{{ card.images.small }}" alt="{{ card.name }}">
+
+  {% set p = card._price %}
+  {% if p %}
+    <p class="price">
+      <b>TCGplayer ({{ p.variant }})</b><br>
+      Market:
+      {% if p.market is not none %}
+        ${{ '%.2f'|format(p.market) }}
+      {% else %}
+        —
+      {% endif %}
+      &nbsp;| Mid:
+      {% if p.mid is not none %}
+        ${{ '%.2f'|format(p.mid) }}
+      {% else %}
+        —
+      {% endif %}
+      <br>
+      <span class="muted">
+        Low:
+        {{ ('$' + ('%.2f'|format(p.low))) if p.low is not none else '—' }}
+        &nbsp;| High:
+        {{ ('$' + ('%.2f'|format(p.high))) if p.high is not none else '—' }}
+        {% if p.updatedAt %} • Updated {{ p.updatedAt }}{% endif %}
+      </span>
+    </p>
+  {% else %}
+    <p class="muted">No TCGplayer price found.</p>
+  {% endif %}
+</div>
+
         {% endfor %}
       </div>
     {% else %}
