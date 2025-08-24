@@ -3,10 +3,35 @@
 <head>
   <meta charset="utf-8">
   <title>Pokémon Card Search</title>
-  <link rel="stylesheet" href="{{ url_for('static', filename='style.css', v='2') }}">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <!-- Link to your CSS -->
+  <link rel="stylesheet" href="{{ url_for('static', filename='style.css', v='3') }}">
+  <style>
+    /* tiny safety styles in case style.css isn't loaded yet */
+    body { font-family: Arial, sans-serif; margin: 0; padding: 20px; background:#f9fafb; color:#333; }
+    h1 { text-align:center; }
+    .nav { text-align:center; margin-bottom: 16px; }
+    form { text-align:center; margin: 16px auto 24px; }
+    form input, form select, form button { padding:8px 10px; margin:6px; border-radius:6px; border:1px solid #d1d5db; }
+    form button { background:#10b981; color:#fff; border:none; cursor:pointer; }
+    form button:hover { background:#0ea371; }
+    .grid { display:grid; grid-template-columns:repeat(auto-fill, minmax(220px,1fr)); gap:12px; max-width:1200px; margin:0 auto; }
+    .card { border:1px solid #e5e7eb; border-radius:10px; padding:12px; background:#fff; box-shadow:0 2px 6px rgba(0,0,0,0.06); text-align:center; }
+    .card img { width:100%; height:auto; border-radius:6px; }
+    .muted { color:#6b7280; font-size:0.9rem; }
+    .price { margin-top:8px; line-height:1.4; }
+    .error { max-width:900px; margin:0 auto 16px; padding:10px 12px; border-radius:8px; background:#fee2e2; color:#991b1b; border:1px solid #fecaca; }
+    .search-meta { text-align:center; margin-bottom:16px; color:#6b7280; }
+  </style>
 </head>
 <body>
   <h1>Pokémon Card Search</h1>
+
+  {% if error %}
+    <div class="error">
+      <strong>Oops:</strong> {{ error }}
+    </div>
+  {% endif %}
 
   <form method="POST">
     <input type="text" name="name" placeholder="Card name (e.g., Pikachu)" value="{{ request.form.get('name','') }}">
@@ -22,62 +47,4 @@
 
     <select name="type">
       <option value="">Any Type</option>
-      {% for t in ["Fire","Water","Grass","Electric","Psychic","Fighting","Darkness","Metal","Fairy","Dragon","Colorless"] %}
-        <option value="{{ t }}" {% if request.form.get('type')==t %}selected{% endif %}>{{ t }}</option>
-      {% endfor %}
-    </select>
-
-    <button type="submit">Search</button>
-  </form>
-
-  {% if results is defined %}
-    {% if results %}
-      <div class="grid">
-        {% for card in results %}
-         <div class="card">
-  <h2>{{ card.name }}</h2>
-  <p class="muted">
-    <b>Set:</b> {{ card.set.name }} &nbsp;•&nbsp;
-    <b>No.:</b> {{ card.number }} &nbsp;•&nbsp;
-    <b>Rarity:</b> {{ card.rarity or "N/A" }}
-  </p>
-  <img src="{{ card.images.small }}" alt="{{ card.name }}">
-
-  {% set p = card._price %}
-  {% if p %}
-    <p class="price">
-      <b>TCGplayer ({{ p.variant }})</b><br>
-      Market:
-      {% if p.market is not none %}
-        ${{ '%.2f'|format(p.market) }}
-      {% else %}
-        —
-      {% endif %}
-      &nbsp;| Mid:
-      {% if p.mid is not none %}
-        ${{ '%.2f'|format(p.mid) }}
-      {% else %}
-        —
-      {% endif %}
-      <br>
-      <span class="muted">
-        Low:
-        {{ ('$' + ('%.2f'|format(p.low))) if p.low is not none else '—' }}
-        &nbsp;| High:
-        {{ ('$' + ('%.2f'|format(p.high))) if p.high is not none else '—' }}
-        {% if p.updatedAt %} • Updated {{ p.updatedAt }}{% endif %}
-      </span>
-    </p>
-  {% else %}
-    <p class="muted">No TCGplayer price found.</p>
-  {% endif %}
-</div>
-
-        {% endfor %}
-      </div>
-    {% else %}
-      <p style="text-align:center;">No cards found.</p>
-    {% endif %}
-  {% endif %}
-</body>
-</html>
+      {% for t in ["Fire","W]()
