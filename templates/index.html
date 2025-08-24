@@ -4,7 +4,7 @@
   <meta charset="utf-8">
   <title>Pokémon Card Search</title>
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <link rel="stylesheet" href="{{ url_for('static', filename='style.css', v='6') }}">
+  <link rel="stylesheet" href="{{ url_for('static', filename='style.css', v='7') }}">
   <style>
     body { font-family: Arial, sans-serif; margin:0; padding:20px; background:#f9fafb; color:#333; }
     h1 { text-align:center; }
@@ -21,6 +21,8 @@
     .search-meta { text-align:center; margin-bottom:16px; color:#6b7280; }
     .pager { text-align:center; margin:20px 0; }
     .pager form { display:inline; }
+    .ai-box { margin-top:8px; text-align:left; background:#f3f4f6; border:1px solid #e5e7eb; border-radius:8px; padding:10px; }
+    .ai-title { font-weight:bold; margin-bottom:6px; }
   </style>
 </head>
 <body>
@@ -106,10 +108,45 @@
           {% else %}
             <p class="muted">No TCGplayer price found.</p>
           {% endif %}
+
+          <!-- Ask AI button -->
+          <form method="POST" action="/analyze" style="margin-top:8px;">
+            <!-- carry current filters & page so we return to same results -->
+            <input type="hidden" name="page" value="{{ page_val }}">
+            <input type="hidden" name="name" value="{{ name_val }}">
+            <input type="hidden" name="set_name" value="{{ set_val }}">
+            <input type="hidden" name="number" value="{{ num_val }}">
+            <input type="hidden" name="rarity" value="{{ rarity_val }}">
+            <input type="hidden" name="type" value="{{ type_val }}">
+
+            <!-- card payload for AI -->
+            <input type="hidden" name="card_id" value="{{ card.id }}">
+            <input type="hidden" name="card_name" value="{{ card.name }}">
+            <input type="hidden" name="card_set" value="{{ card.set.name }}">
+            <input type="hidden" name="card_number" value="{{ card.number }}">
+            <input type="hidden" name="card_rarity" value="{{ card.rarity }}">
+            <input type="hidden" name="price_variant" value="{{ p.variant if p else '' }}">
+            <input type="hidden" name="price_market" value="{{ p.market if p and p.market is not none else '' }}">
+            <input type="hidden" name="price_mid" value="{{ p.mid if p and p.mid is not none else '' }}">
+            <input type="hidden" name="price_low" value="{{ p.low if p and p.low is not none else '' }}">
+            <input type="hidden" name="price_high" value="{{ p.high if p and p.high is not none else '' }}">
+            <input type="hidden" name="price_updated" value="{{ p.updatedAt if p else '' }}">
+
+            <button type="submit">Ask AI about value</button>
+          </form>
+
+          {% if ai_opinions and ai_opinions.get(card.id) %}
+            <div class="ai-box">
+              <div class="ai-title">AI outlook (collector focus)</div>
+              <div>{{ ai_opinions.get(card.id) }}</div>
+              <div class="muted" style="margin-top:6px;">This is not financial advice.</div>
+            </div>
+          {% endif %}
         </div>
       {% endfor %}
     </div>
 
+    <!-- Pagination -->
     <div class="pager">
       {% if page_val|int > 1 %}
         <form method="get">
