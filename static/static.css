@@ -1,0 +1,59 @@
+body {
+    font-family: Arial, sans-serif;
+    background-color: #f9fafb;
+    color: #333;
+    margin: 0;
+    padding: 20px;
+}
+
+h1 { text-align: center; }
+
+.nav {
+    text-align: center;
+    margin-bottom: 16px;
+}
+
+form {
+    text-align: center;
+    margin: 16px auto 24px;
+}
+
+form input, form select, form button {
+    padding: 8px 10px;
+    margin: 6px;
+    border-radius: 6px;
+    border: 1px solid #d1d5db;
+}
+
+form button {
+    background-color: #10b981;
+    color: white;
+    cursor: pointer;
+    border: none;
+}
+form button:hover { background-color: #0ea371; }
+
+.grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+    gap: 12px;
+    max-width: 1200px;
+    margin: 0 auto;
+}
+
+.card {
+    border: 1px solid #e5e7eb;
+    border-radius: 10px;
+    padding: 12px;
+    background: white;
+    box-shadow: 0 2px 6px rgba(0,0,0,0.06);
+    text-align: center;
+}
+
+.card img {
+    width: 100%;
+    height: auto;
+    border-radius: 6px;
+}
+
+.muted { color: #6b7280; font-size: 0.9rem; }

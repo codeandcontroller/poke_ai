@@ -1,13 +1,47 @@
 <!DOCTYPE html>
 <html>
 <head>
-    <title>Pokémon Card Search</title>
+  <meta charset="utf-8">
+  <title>Pokémon Card Search</title>
+  <link rel="stylesheet" href="{{ url_for('static', filename='style.css', v='1') }}">
 </head>
 <body>
-    <h1>Pokémon Card Search</h1>
-    <form method="POST">
-        <input type="text" name="card_name" placeholder="Enter card name">
-        <button type="submit">Search</button>
-    </form>
+  <h1>Pokémon Card Search</h1>
+
+  <form method="POST">
+    <!-- Card name -->
+    <input type="text" name="card_name" placeholder="Card name (e.g., Pikachu)">
+
+    <!-- Set name -->
+    <input type="text" name="set_name" placeholder="Set name (optional)">
+
+    <!-- Rarity -->
+    <select name="rarity">
+      <option value="">Any Rarity</option>
+      <option value="Common">Common</option>
+      <option value="Uncommon">Uncommon</option>
+      <option value="Rare">Rare</option>
+      <option value="Rare Holo">Rare Holo</option>
+      <option value="Ultra Rare">Ultra Rare</option>
+    </select>
+
+    <!-- Type -->
+    <select name="type">
+      <option value="">Any Type</option>
+      <option value="Fire">Fire</option>
+      <option value="Water">Water</option>
+      <option value="Grass">Grass</option>
+      <option value="Electric">Electric</option>
+      <option value="Psychic">Psychic</option>
+      <option value="Fighting">Fighting</option>
+      <option value="Darkness">Darkness</option>
+      <option value="Metal">Metal</option>
+      <option value="Fairy">Fairy</option>
+      <option value="Dragon">Dragon</option>
+      <option value="Colorless">Colorless</option>
+    </select>
+
+    <button type="submit">Search</button>
+  </form>
 </body>
 </html>

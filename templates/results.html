@@ -1,24 +1,32 @@
 <!DOCTYPE html>
 <html>
 <head>
-    <title>Results for {{ search }}</title>
+  <meta charset="utf-8">
+  <title>Results for {{ search }}</title>
+  <link rel="stylesheet" href="{{ url_for('static', filename='style.css', v='1') }}">
 </head>
 <body>
-    <h1>Results for "{{ search }}"</h1>
-    <a href="/">Search again</a>
-    <div>
-        {% if cards %}
-            {% for card in cards %}
-                <div style="border:1px solid #ccc; padding:10px; margin:10px;">
-                    <h2>{{ card.name }}</h2>
-                    <p>Set: {{ card.set.name }}</p>
-                    <p>Rarity: {{ card.rarity if card.rarity else "N/A" }}</p>
-                    <img src="{{ card.images.small }}" alt="{{ card.name }}">
-                </div>
-            {% endfor %}
-        {% else %}
-            <p>No cards found.</p>
-        {% endif %}
+  <div class="nav">
+    <a href="/">← Back to Search</a>
+  </div>
+
+  <h1>Results for “{{ search }}”</h1>
+
+  {% if cards and cards|length > 0 %}
+    <div class="grid">
+      {% for card in cards %}
+        <div class="card">
+          <h2>{{ card.name }}</h2>
+          <p class="muted">
+            <b>Set:</b> {{ card.set.name }} &nbsp;•&nbsp;
+            <b>Rarity:</b> {{ card.rarity if card.rarity else "N/A" }}
+          </p>
+          <img src="{{ card.images.small }}" alt="{{ card.name }}">
+        </div>
+      {% endfor %}
     </div>
+  {% else %}
+    <p style="text-align:center;">No cards found.</p>
+  {% endif %}
 </body>
 </html>
