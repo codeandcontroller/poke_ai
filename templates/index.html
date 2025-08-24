@@ -58,9 +58,19 @@
     <button type="submit">Search</button>
   </form>
 
-  {% if search %}
-    <div class="search-meta">Query: <em>{{ search }}</em></div>
-  {% endif %}
+ {% if results is defined %}
+  <div class="search-meta">
+    {% if request.form.get('name') %}
+      Showing results for <em>{{ request.form.get('name') }}</em>
+      {% if request.form.get('set_name') %} in set <em>{{ request.form.get('set_name') }}</em>{% endif %}
+      {% if request.form.get('number') %} (card #{{ request.form.get('number') }}){% endif %}
+      {% if request.form.get('rarity') %} — Rarity: <em>{{ request.form.get('rarity') }}</em>{% endif %}
+      {% if request.form.get('type') %} — Type: <em>{{ request.form.get('type') }}</em>{% endif %}
+    {% else %}
+      Showing results for all cards
+    {% endif %}
+  </div>
+{% endif %}
 
   {% if results is defined %}
     {% if results %}
