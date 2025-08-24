@@ -4,10 +4,8 @@
   <meta charset="utf-8">
   <title>Pokémon Card Search</title>
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <!-- Main CSS -->
-  <link rel="stylesheet" href="{{ url_for('static', filename='style.css', v='5') }}">
+  <link rel="stylesheet" href="{{ url_for('static', filename='style.css', v='6') }}">
   <style>
-    /* safety styles if style.css doesn't load */
     body { font-family: Arial, sans-serif; margin:0; padding:20px; background:#f9fafb; color:#333; }
     h1 { text-align:center; }
     form { text-align:center; margin:16px auto 24px; }
@@ -28,4 +26,117 @@
 <body>
   <h1>Pokémon Card Search</h1>
 
-  {
+  {% if error %}
+    <div class="error"><strong>Heads up:</strong> {{ error }}</div>
+  {% endif %}
+
+  {% set rarities = ["Common","Uncommon","Rare","Rare Holo","Ultra Rare"] %}
+  {% set types = ["Fire","Water","Grass","Electric","Psychic","Fighting","Darkness","Metal","Fairy","Dragon","Colorless"] %}
+
+  {% set name_val = name|default(request.form.get('name','')) %}
+  {% set set_val = set_name|default(request.form.get('set_name','')) %}
+  {% set num_val = number|default(request.form.get('number','')) %}
+  {% set rarity_val = rarity|default(request.form.get('rarity','')) %}
+  {% set type_val = type_|default(request.form.get('type','')) %}
+  {% set page_val = page|default(1) %}
+
+  <form method="POST">
+    <input type="text" name="name" placeholder="Card name (e.g., Pikachu)" value="{{ name_val }}">
+    <input type="text" name="set_name" placeholder="Set name (e.g., Base Set)" value="{{ set_val }}">
+    <input type="text" name="number" placeholder="Card number (e.g., 4)" value="{{ num_val }}">
+
+    <select name="rarity">
+      <option value="">Any Rarity</option>
+      {% for r in rarities %}
+        <option value="{{ r }}" {% if rarity_val==r %}selected{% endif %}>{{ r }}</option>
+      {% endfor %}
+    </select>
+
+    <select name="type">
+      <option value="">Any Type</option>
+      {% for t in types %}
+        <option value="{{ t }}" {% if type_val==t %}selected{% endif %}>{{ t }}</option>
+      {% endfor %}
+    </select>
+
+    <button type="submit">Search</button>
+  </form>
+
+  {% if results is defined %}
+    <div class="search-meta">
+      {% if name_val or set_val or num_val or rarity_val or type_val %}
+        Showing results
+        {% if name_val %}for <em>{{ name_val }}</em>{% endif %}
+        {% if set_val %} in set <em>{{ set_val }}</em>{% endif %}
+        {% if num_val %} (card #{{ num_val }}){% endif %}
+        {% if rarity_val %} — Rarity: <em>{{ rarity_val }}</em>{% endif %}
+        {% if type_val %} — Type: <em>{{ type_val }}</em>{% endif %}
+      {% else %}
+        Showing results for all cards
+      {% endif %}
+      — Page {{ page_val }}
+    </div>
+  {% endif %}
+
+  {% if results %}
+    <div class="grid">
+      {% for card in results %}
+        <div class="card">
+          <h2>{{ card.name }}</h2>
+          <p class="muted">
+            <b>Set:</b> {{ card.set.name }} &nbsp;•&nbsp;
+            <b>No.:</b> {{ card.number }} &nbsp;•&nbsp;
+            <b>Rarity:</b> {{ card.rarity or "N/A" }}
+          </p>
+
+          <img src="{{ card.images.small }}" alt="{{ card.name }}">
+
+          {% set p = card._price %}
+          {% if p %}
+            <p class="price">
+              <b>TCGplayer ({{ p.variant }})</b><br>
+              Market: {{ (('$' + ('%.2f'|format(p.market))) if p.market is not none else '—') }}
+              &nbsp;| Mid: {{ (('$' + ('%.2f'|format(p.mid))) if p.mid is not none else '—') }}<br>
+              <span class="muted">
+                Low: {{ (('$' + ('%.2f'|format(p.low))) if p.low is not none else '—') }}
+                &nbsp;| High: {{ (('$' + ('%.2f'|format(p.high))) if p.high is not none else '—') }}
+                {% if p.updatedAt %} • Updated {{ p.updatedAt }}{% endif %}
+              </span>
+            </p>
+          {% else %}
+            <p class="muted">No TCGplayer price found.</p>
+          {% endif %}
+        </div>
+      {% endfor %}
+    </div>
+
+    <div class="pager">
+      {% if page_val|int > 1 %}
+        <form method="get">
+          <input type="hidden" name="from_nav" value="1">
+          <input type="hidden" name="name" value="{{ name_val }}">
+          <input type="hidden" name="set_name" value="{{ set_val }}">
+          <input type="hidden" name="number" value="{{ num_val }}">
+          <input type="hidden" name="rarity" value="{{ rarity_val }}">
+          <input type="hidden" name="type" value="{{ type_val }}">
+          <input type="hidden" name="page" value="{{ page_val|int - 1 }}">
+          <button type="submit">Previous</button>
+        </form>
+      {% endif %}
+
+      <form method="get">
+        <input type="hidden" name="from_nav" value="1">
+        <input type="hidden" name="name" value="{{ name_val }}">
+        <input type="hidden" name="set_name" value="{{ set_val }}">
+        <input type="hidden" name="number" value="{{ num_val }}">
+        <input type="hidden" name="rarity" value="{{ rarity_val }}">
+        <input type="hidden" name="type" value="{{ type_val }}">
+        <input type="hidden" name="page" value="{{ page_val|int + 1 }}">
+        <button type="submit">Next</button>
+      </form>
+    </div>
+  {% elif results is defined %}
+    <p style="text-align:center;">No cards found.</p>
+  {% endif %}
+</body>
+</html>
