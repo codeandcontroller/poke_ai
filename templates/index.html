@@ -70,6 +70,36 @@
       Showing results for all cards
     {% endif %}
   </div>
+{% if results %}
+  <div class="grid">
+    {# ... cards loop ... #}
+  </div>
+
+  <div style="text-align:center; margin:20px;">
+    {% if page > 1 %}
+      <form method="get" style="display:inline;">
+        <input type="hidden" name="from_nav" value="1">
+        <input type="hidden" name="name" value="{{ name }}">
+        <input type="hidden" name="set_name" value="{{ set_name }}">
+        <input type="hidden" name="number" value="{{ number }}">
+        <input type="hidden" name="rarity" value="{{ rarity }}">
+        <input type="hidden" name="type" value="{{ type_ }}">
+        <input type="hidden" name="page" value="{{ page - 1 }}">
+        <button type="submit">Previous</button>
+      </form>
+    {% endif %}
+
+    <form method="get" style="display:inline;">
+      <input type="hidden" name="from_nav" value="1">
+      <input type="hidden" name="name" value="{{ name }}">
+      <input type="hidden" name="set_name" value="{{ set_name }}">
+      <input type="hidden" name="number" value="{{ number }}">
+      <input type="hidden" name="rarity" value="{{ rarity }}">
+      <input type="hidden" name="type" value="{{ type_ }}">
+      <input type="hidden" name="page" value="{{ page + 1 }}">
+      <button type="submit">Next</button>
+    </form>
+  </div>
 {% endif %}
 
   {% if results is defined %}
