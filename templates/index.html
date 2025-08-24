@@ -3,45 +3,51 @@
 <head>
   <meta charset="utf-8">
   <title>Pokémon Card Search</title>
-  <link rel="stylesheet" href="{{ url_for('static', filename='style.css', v='1') }}">
+  <link rel="stylesheet" href="{{ url_for('static', filename='style.css', v='2') }}">
 </head>
 <body>
   <h1>Pokémon Card Search</h1>
 
   <form method="POST">
-    <!-- Card name -->
-    <input type="text" name="card_name" placeholder="Card name (e.g., Pikachu)">
+    <input type="text" name="name" placeholder="Card name (e.g., Pikachu)" value="{{ request.form.get('name','') }}">
+    <input type="text" name="set_name" placeholder="Set name (e.g., Base Set)" value="{{ request.form.get('set_name','') }}">
+    <input type="text" name="number" placeholder="Card number (e.g., 4)" value="{{ request.form.get('number','') }}">
 
-    <!-- Set name -->
-    <input type="text" name="set_name" placeholder="Set name (optional)">
-
-    <!-- Rarity -->
     <select name="rarity">
       <option value="">Any Rarity</option>
-      <option value="Common">Common</option>
-      <option value="Uncommon">Uncommon</option>
-      <option value="Rare">Rare</option>
-      <option value="Rare Holo">Rare Holo</option>
-      <option value="Ultra Rare">Ultra Rare</option>
+      {% for r in ["Common","Uncommon","Rare","Rare Holo","Ultra Rare"] %}
+        <option value="{{ r }}" {% if request.form.get('rarity')==r %}selected{% endif %}>{{ r }}</option>
+      {% endfor %}
     </select>
 
-    <!-- Type -->
     <select name="type">
       <option value="">Any Type</option>
-      <option value="Fire">Fire</option>
-      <option value="Water">Water</option>
-      <option value="Grass">Grass</option>
-      <option value="Electric">Electric</option>
-      <option value="Psychic">Psychic</option>
-      <option value="Fighting">Fighting</option>
-      <option value="Darkness">Darkness</option>
-      <option value="Metal">Metal</option>
-      <option value="Fairy">Fairy</option>
-      <option value="Dragon">Dragon</option>
-      <option value="Colorless">Colorless</option>
+      {% for t in ["Fire","Water","Grass","Electric","Psychic","Fighting","Darkness","Metal","Fairy","Dragon","Colorless"] %}
+        <option value="{{ t }}" {% if request.form.get('type')==t %}selected{% endif %}>{{ t }}</option>
+      {% endfor %}
     </select>
 
     <button type="submit">Search</button>
   </form>
+
+  {% if results is defined %}
+    {% if results %}
+      <div class="grid">
+        {% for card in results %}
+          <div class="card">
+            <h2>{{ card.name }}</h2>
+            <p class="muted">
+              <b>Set:</b> {{ card.set.name }} &nbsp;•&nbsp;
+              <b>No.:</b> {{ card.number }} &nbsp;•&nbsp;
+              <b>Rarity:</b> {{ card.rarity or "N/A" }}
+            </p>
+            <img src="{{ card.images.small }}" alt="{{ card.name }}">
+          </div>
+        {% endfor %}
+      </div>
+    {% else %}
+      <p style="text-align:center;">No cards found.</p>
+    {% endif %}
+  {% endif %}
 </body>
 </html>
